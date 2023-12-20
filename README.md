@@ -1,8 +1,6 @@
 # Bp3::Core
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bp3/core`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+bp3-core provides core includes for black_phoebe_3.
 
 ## Installation
 
@@ -22,7 +20,10 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In models that are filtered/sorted with ransack, add:
+```ruby
+include Bp3::Ransackable
+```
 
 ## Development
 
@@ -32,7 +33,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/bp3-core.
+Bug reports and pull requests are welcome on GitHub at https://github.com/persuavis/bp3-core.
 
 ## License
 
