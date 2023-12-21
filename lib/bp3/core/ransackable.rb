@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Bp3
+  # Bp3::Ransackable provides class methods expected by models that use ransack
   module Ransackable
     extend ActiveSupport::Concern
 
@@ -8,8 +9,8 @@ module Bp3
       def ransackable_fields(auth_object = nil)
         fields =
           ransackable_attributes(auth_object) +
-            ransackable_associations(auth_object) +
-            ransackable_scopes(auth_object)
+          ransackable_associations(auth_object) +
+          ransackable_scopes(auth_object)
         fields.map(&:to_sym).uniq
       end
 

@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require "bp3/core"
+require 'bp3/core'
