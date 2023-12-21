@@ -11,6 +11,9 @@ AllCops:
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec
 
+Metrics/BlockLength:
+  Enabled: false
+
 Naming/FileName:
   Exclude:
     - lib/bp3-core.rb
