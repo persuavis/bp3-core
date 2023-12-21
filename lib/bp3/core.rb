@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/concern'
+require 'active_support/core_ext/module/attribute_accessors'
 require_relative 'core/version'
 require_relative 'core/ransackable'
 
@@ -12,6 +13,5 @@ module Bp3
     include Ransackable
 
     class Error < StandardError; end
-    # Your code goes here...
   end
 end

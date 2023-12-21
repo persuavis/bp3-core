@@ -5,6 +5,9 @@ module Bp3
   module Ransackable
     extend ActiveSupport::Concern
 
+    mattr_accessor :attribute_exceptions, default: []
+    mattr_accessor :association_exceptions, default: []
+
     class_methods do
       def ransackable_fields(auth_object = nil)
         fields =
@@ -15,12 +18,12 @@ module Bp3
       end
 
       def ransackable_attributes(_auth_object = nil)
-        except = %w[config config_id settable settable_id]
+        except = attribute_exceptions.map(&:to_s)
         column_names.map(&:to_s) - except
       end
 
       def ransackable_associations(_auth_object = nil)
-        except = %w[config settable]
+        except = association_exceptions.map(&:to_s)
         reflect_on_all_associations.map(&:name).map(&:to_s) - except
       end
 
@@ -30,6 +33,16 @@ module Bp3
 
       def ransortable_attributes(auth_object = nil)
         ransackable_attributes(auth_object)
+      end
+
+      private
+
+      def attribute_exceptions
+        Bp3::Ransackable.attribute_exceptions
+      end
+
+      def association_exceptions
+        Bp3::Ransackable.association_exceptions
       end
     end
   end
