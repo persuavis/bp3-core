@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'bp3/core'
+require 'bp3-core'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
