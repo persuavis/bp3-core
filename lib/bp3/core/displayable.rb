@@ -22,10 +22,6 @@ module Bp3
         filter_attributes
       end
 
-      def self.i18n_key
-        name.downcase.gsub('::', '/')
-      end
-
       def i18n_key
         self.class.i18n_key
       end
@@ -66,6 +62,12 @@ module Bp3
         change[0] = version_filter_mask if change[0].present?
         change[1] = version_filter_mask if change[1].present?
         change
+      end
+
+      class_methods do
+        def i18n_key
+          name.downcase.gsub('::', '/')
+        end
       end
     end
   end

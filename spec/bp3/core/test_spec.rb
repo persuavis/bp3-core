@@ -38,6 +38,11 @@ RSpec.describe Bp3::Core::Test do
     it 'includes Displayable' do
       expect(described_class.ancestors).to include(Bp3::Core::Displayable)
     end
+
+    it 'provides an i18n key' do
+      # byebug
+      expect(described_class.i18n_key).to eq('bp3/core/test')
+    end
   end
 
   describe 'FeatureFlags' do
