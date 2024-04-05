@@ -22,6 +22,14 @@ module Bp3
         filter_attributes
       end
 
+      def self.i18n_key
+        name.downcase.gsub('::', '/')
+      end
+
+      def i18n_key
+        self.class.i18n_key
+      end
+
       private
 
       def version_filter_mask
