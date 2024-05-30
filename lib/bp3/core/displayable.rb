@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'action_view/record_identifier'
+
 module Bp3
   module Core
     module Displayable
