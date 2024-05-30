@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'action_view/record_identifier'
+require 'active_support/parameter_filter'
 
 module Bp3
   module Core
