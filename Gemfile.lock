@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bp3-core (0.1.1)
+    bp3-core (0.1.2)
       actionview (>= 7.1.2, < 8)
       activesupport (>= 7.1.2, < 8)
 
