@@ -24,12 +24,6 @@ module Bp3
                                     foreign_key: :rqid, primary_key: :rqid, optional: true
       end
 
-      # class_methods do
-      #   def global_request_state_class
-      #     @@global_request_state_class ||= global_request_state_class_name.constantize
-      #   end
-      # end
-
       private
 
       def set_rqid
