@@ -2,6 +2,7 @@
 
 module Bp3
   module Core
+    # rubocop:disable Metrics/ModuleLength
     module Actions
       extend ActiveSupport::Concern
 
@@ -208,5 +209,6 @@ module Bp3
         @grsc ||= Bp3::Core::Rqid.global_request_state_class
       end
     end
+    # rubocop:enable Metrics/ModuleLength
   end
 end
