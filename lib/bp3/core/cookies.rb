@@ -64,11 +64,11 @@ module Bp3
         return if cookie_value.blank? && do_not_track
 
         sites_site_id, tenant_id, identification = cookie_value&.split('/')
-        if sites_site_id && sites_site_id != GRS.current_site.id
-          Rails.logger.warn { "check_visitor_cookie: site mismatch! (#{sites_site_id} and #{GRS.current_site.id}" }
+        if sites_site_id && sites_site_id != grsc.current_site.id
+          Rails.logger.warn { "check_visitor_cookie: site mismatch! (#{sites_site_id} and #{grsc.current_site.id}" }
         end
-        if tenant_id && tenant_id != GRS.current_tenant.id
-          Rails.logger.warn { "check_visitor_cookie: tenant mismatch! (#{tenant_id} and #{GRS.current_tenant.id}" }
+        if tenant_id && tenant_id != grsc.current_tenant.id
+          Rails.logger.warn { "check_visitor_cookie: tenant mismatch! (#{tenant_id} and #{grsc.current_tenant.id}" }
         end
         visitor = Users::Visitor.find_by(sites_site_id:, tenant_id:, identification:)
         if visitor.nil?
@@ -80,7 +80,7 @@ module Bp3
             expires: 365.days.from_now
           }
         end
-        @current_visitor = GlobalRequestState.current_visitor = visitor
+        @current_visitor = grsc.current_visitor = visitor
         Rails.logger.debug do
           "check_visitor_cookie: cookie[#{visitor_cookie_name}]=#{cookies.signed[visitor_cookie_name]}"
         end
@@ -93,8 +93,8 @@ module Bp3
         return if cookie_value.blank? && do_not_track
 
         identification = cookie_value
-        sites_site_id = GRS.current_site_id
-        tenant_id = GRS.current_tenant_id
+        sites_site_id = grsc.current_site_id
+        tenant_id = grsc.current_tenant_id
         visitor = Users::Visitor.find_by(sites_site_id:, tenant_id:, identification:)
         if visitor.nil?
           visitor = create_visitor
@@ -105,7 +105,7 @@ module Bp3
             expires: 365.days.from_now
           }
         end
-        @current_visitor = GlobalRequestState.current_visitor = visitor
+        @current_visitor = grsc.current_visitor = visitor
         Rails.logger.debug do
           "check_visitor_cookie: cookie[#{new_visitor_cookie_name}]=#{cookies.signed[new_visitor_cookie_name]}"
         end
@@ -121,18 +121,18 @@ module Bp3
       end
 
       def create_visitor
-        Users::Visitor.create!(sites_site: GRS.current_site,
-                               tenant: GRS.current_tenant,
-                               workspaces_workspace: GRS.current_workspace,
+        Users::Visitor.create!(sites_site: grsc.current_site,
+                               tenant: grsc.current_tenant,
+                               workspaces_workspace: grsc.current_workspace,
                                identification: SecureRandom.uuid)
       end
 
       def cookie_site_id
-        GRS.current_site.id[0..7]
+        grsc.current_site.id[0..7]
       end
 
       def cookie_tenant_id
-        GRS.current_tenant.id[0..7]
+        grsc.current_tenant.id[0..7]
       end
     end
   end

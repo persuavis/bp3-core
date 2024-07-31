@@ -36,16 +36,16 @@ module Bp3
       private
 
       def set_global_request_state
-        GlobalRequestState.inbound_request = @global_request
-        GlobalRequestState.current_user = current_user
-        GlobalRequestState.current_admin = current_admin
-        GlobalRequestState.current_root = current_root
-        GlobalRequestState.locale = I18n.locale
-        GlobalRequestState.view_context = view_context
+        grsc.inbound_request = @global_request
+        grsc.current_user = current_user
+        grsc.current_admin = current_admin
+        grsc.current_root = current_root
+        grsc.locale = I18n.locale
+        grsc.view_context = view_context
       end
 
       def set_rqid
-        GlobalRequestState.request_id = global_rqid
+        grsc.request_id = global_rqid
       end
 
       def global_rqid
@@ -84,7 +84,7 @@ module Bp3
 
       def check_site
         current_site || create_site
-        GlobalRequestState.current_site = current_site
+        grsc.current_site = current_site
       end
 
       def current_site
@@ -100,7 +100,7 @@ module Bp3
       # TODO: cache the workspace/regex list
       def check_workspace
         current_workspace || create_workspace
-        GlobalRequestState.current_workspace = current_workspace
+        grsc.current_workspace = current_workspace
       end
 
       # TODO: move (some of) this into Workspace
@@ -127,7 +127,7 @@ module Bp3
 
       def check_tenant
         current_tenant || create_tenant
-        GlobalRequestState.current_tenant = current_tenant
+        grsc.current_tenant = current_tenant
       end
 
       def current_tenant
@@ -161,7 +161,7 @@ module Bp3
       end
 
       def info_for_paper_trail
-        state = GlobalRequestState.new
+        state = grsc.new
         {
           rqid: global_rqid,
           sites_site_id: state.current_site&.id,
@@ -187,7 +187,7 @@ module Bp3
       end
 
       def either_site
-        GlobalRequestState.either_site
+        grsc.either_site
       end
 
       def check_site_mode
@@ -202,6 +202,10 @@ module Bp3
           render template: 'sites/modes/maintenance'
           break
         end
+      end
+
+      def grsc
+        @grsc ||= Bp3::Core::Rqid.global_request_state_class
       end
     end
   end
