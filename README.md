@@ -67,6 +67,7 @@ attributes that need to be populated from global state, add:
 include Bp3::Core::Tenantable
 ```
 The specific columns expected by `Tenantable` are:
+
 - site: `sites_site_id`
 - tenant: `tenant_id`
 - workspace: `workspaces_workspace_id`
