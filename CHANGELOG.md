@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.1.5] - 2024-11-18
+
+- Use ruby 3.3.5 and relax gem constraints
+
 ## [0.1.3] - 2024-07-31
 
 - Ensure use of common global request state
