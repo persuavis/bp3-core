@@ -51,7 +51,6 @@ module Bp3
         errors.add(:workspaces_workspace, :must_match_site)
       end
 
-      # rubocop:disable: Metrics/BlockLength
       class_methods do
         def configure_tenancy(tenancy_configuration = {})
           @tenancy_configuration = default_configuration.merge(tenancy_configuration)
@@ -137,7 +136,6 @@ module Bp3
           }
         end
       end
-      # rubocop:disable: Metrics/BlockLength
     end
   end
 end
