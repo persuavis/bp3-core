@@ -1,5 +1,12 @@
 ## [Unreleased]
 
+## [0.2.0] - 2026-01-09
+
+- Add bp3-request_state dependency
+- Add SystemLogs concern
+- Update gems
+- Update ruby version to 3.4.6
+
 ## [0.1.5] - 2024-11-18
 
 - Use ruby 3.3.5 and relax gem constraints
