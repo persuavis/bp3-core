@@ -40,7 +40,6 @@ RSpec.describe Bp3::Core::Test do
     end
 
     it 'provides an i18n key' do
-      # byebug
       expect(described_class.i18n_key).to eq('bp3/core/test')
     end
   end
@@ -60,6 +59,29 @@ RSpec.describe Bp3::Core::Test do
   describe 'Sqnr' do
     it 'includes Sqnr' do
       expect(described_class.ancestors).to include(Bp3::Core::Sqnr)
+    end
+  end
+
+  describe 'SystemLogs' do
+    it 'includes SystemLogs' do
+      expect(described_class.ancestors).to include(Bp3::Core::SystemLogs)
+    end
+
+    it 'logs messages' do
+      Bp3::Core::SystemLogs.system_log_name = '::Bp3::Core::Test::SystemLogger'
+      expect do
+        described_class.new.log(level: 'error', key: 'test.message', message: 'log this via instance')
+        described_class.log(level: 'error', key: 'test.message', message: 'log this via class')
+      end.to change(Bp3::Core::Test::SystemLogger, :log_count).by(2)
+    end
+
+    it 'logs exceptions' do
+      Bp3::Core::SystemLogs.system_exception_name = '::Bp3::Core::Test::ExceptionLogger'
+      exception = StandardError.new('test exception')
+      expect do
+        described_class.new.log(level: 'error', key: 'test.exception', exception:)
+        described_class.log(level: 'error', key: 'test.exception', exception:)
+      end.to change(Bp3::Core::Test::ExceptionLogger, :log_count).by(2)
     end
   end
 

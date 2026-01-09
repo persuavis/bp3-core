@@ -61,6 +61,15 @@ To use :sqnr for record ordering for a particular model, use the class macro:
 ```ruby
 use_sqnr_for_ordering
 ```
+In all models that need logging of messages and exceptions to the db, add:
+```ruby
+include Bp3::Core::SystemLogs
+```
+Then in your application's `config/initializers/bp3-core`, add:
+```ruby
+Bp3::Core::SystemLogs.system_log_name = 'System::Log' # any class that exposes a .log_message method
+Bp3::Core::SystemLogs.system_exception_name = 'System::Exception' # any class that exposes a .log_exception method
+```
 In all ActiveRecord models (or their base class) that use site, tenant and/or workspace 
 attributes that need to be populated from global state, add:
 ```ruby
