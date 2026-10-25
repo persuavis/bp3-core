@@ -5,6 +5,25 @@ module Bp3
     module Tenantable
       extend ActiveSupport::Concern
 
+      # The application's request state, the Bp3::RequestState::Base subclass Bp3::Core::Rqid is
+      # configured with
+      def self.global_request_state
+        Bp3::Core::Rqid.global_request_state_class
+      end
+
+      # How far a default scope reaches is decided by the primary login, the request state's
+      # current_login: the least privileged one signed in. A root or an admin signed in beside a less
+      # privileged login has that login's reach rather than their own.
+      def self.reaches_every_site?(state = global_request_state)
+        login = state.current_login
+        !login.nil? && login == state.current_root
+      end
+
+      def self.reaches_every_tenant?(state = global_request_state)
+        login = state.current_login
+        !login.nil? && (login == state.current_root || login == state.current_admin)
+      end
+
       included do
         # call connection to make sure the db meta data has been loaded
         ignore_notifications_string = (ENV['IGNORE_NOTIFICATIONS'] || '').strip
@@ -16,13 +35,13 @@ module Bp3
       def set_sites_site_id
         return if sites_site_id || sites_site
 
-        self.sites_site_id = GlobalRequestState.either_site_id
+        self.sites_site_id = Bp3::Core::Tenantable.global_request_state.either_site_id
       end
 
       def set_tenant_id
         return if tenant_id || tenant
 
-        self.tenant_id = GlobalRequestState.either_tenant_id
+        self.tenant_id = Bp3::Core::Tenantable.global_request_state.either_tenant_id
       end
 
       def tenant_matches_site
@@ -38,7 +57,7 @@ module Bp3
       def set_workspaces_workspace_id
         return if workspaces_workspace_id || workspaces_workspace
 
-        self.workspaces_workspace_id = GlobalRequestState.either_workspace_id
+        self.workspaces_workspace_id = Bp3::Core::Tenantable.global_request_state.either_workspace_id
       end
 
       def workspaces_workspace_matches_site
@@ -75,8 +94,8 @@ module Bp3
           before_validation :set_sites_site_id
 
           default_scope lambda {
-            site = GlobalRequestState.either_site
-            site = nil if GlobalRequestState.current_root
+            site = Bp3::Core::Tenantable.global_request_state.either_site
+            site = nil if Bp3::Core::Tenantable.reaches_every_site?
             where(sites_site_id: site.id) if site
           }
         end
@@ -95,10 +114,10 @@ module Bp3
           validate :tenant_matches_site
 
           default_scope lambda {
-            site = GlobalRequestState.either_site
-            site = nil if GlobalRequestState.current_root
-            tenant = GlobalRequestState.either_tenant
-            tenant = nil if GlobalRequestState.either_admin
+            site = Bp3::Core::Tenantable.global_request_state.either_site
+            site = nil if Bp3::Core::Tenantable.reaches_every_site?
+            tenant = Bp3::Core::Tenantable.global_request_state.either_tenant
+            tenant = nil if Bp3::Core::Tenantable.reaches_every_tenant?
             if site && tenant # for non admins (i.e. users)
               where(sites_site_id: site.id, tenant_id: tenant.id)
             elsif site # for site admins

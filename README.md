@@ -80,7 +80,11 @@ The specific columns expected by `Tenantable` are:
 - site: `sites_site_id`
 - tenant: `tenant_id`
 - workspace: `workspaces_workspace_id`
-Tenantable will use reflection to determine which one(s) exist, and will create associations and callbacks accordingly. 
+Tenantable will use reflection to determine which one(s) exist, and will create associations and callbacks accordingly.
+
+Its default scopes reach as far as the primary login, the request state's `current_login`: a root
+reaches every site and an admin every tenant of their site, unless a less privileged login is signed
+in beside them. It reads the request state through `Bp3::Core::Rqid.global_request_state_class`.
 
 ## Development
 
