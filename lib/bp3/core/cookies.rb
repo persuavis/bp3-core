@@ -58,7 +58,7 @@ module Bp3
         }
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
       def check_old_visitor_cookie
         cookie_value = cookies.signed[visitor_cookie_name]
         return if cookie_value.blank? && do_not_track
@@ -85,9 +85,8 @@ module Bp3
           "check_visitor_cookie: cookie[#{visitor_cookie_name}]=#{cookies.signed[visitor_cookie_name]}"
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
       def check_new_visitor_cookie
         cookie_value = cookies.signed[new_visitor_cookie_name]
         return if cookie_value.blank? && do_not_track
@@ -110,7 +109,6 @@ module Bp3
           "check_visitor_cookie: cookie[#{new_visitor_cookie_name}]=#{cookies.signed[new_visitor_cookie_name]}"
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def visitor_cookie_name
         @visitor_cookie_name ||= "#{VISITOR_COOKIE_NAME_PREFIX}_#{cookie_site_id}_#{cookie_tenant_id}"

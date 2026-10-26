@@ -100,7 +100,7 @@ module Bp3
           }
         end
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def may_belong_to_tenant
           column = columns.detect { |c| c.name == 'tenant_id' }
           return if column.nil?
@@ -127,7 +127,6 @@ module Bp3
             end
           }
         end
-        # rubocop:enable Metrics/MethodLength
 
         def may_belong_to_workspace
           column = columns.detect { |c| c.name == 'workspaces_workspace_id' }

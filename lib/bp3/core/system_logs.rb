@@ -21,7 +21,7 @@ module Bp3
 
       # Class methods for use in contexts without instance methods
       module ClassMethods
-        # rubocop:disable Metrics/ParameterLists, Metrics/MethodLength
+        # rubocop:disable-next Metrics/ParameterLists, Metrics/MethodLength
         def log(level:, key:, message: nil, exception: nil, site: nil, details: {}, **system_log_options)
           system_log_options = SYSTEM_LOG_DEFAULTS.dup.merge(system_log_options)
           record = nil
@@ -43,7 +43,6 @@ module Bp3
             nil
           end
         end
-        # rubocop:enable Metrics/ParameterLists, Metrics/MethodLength
 
         def log_debug(key:, message:, details: {}, **system_log_options)
           log(level: 'debug', key:, message:, details:, **system_log_options)
@@ -84,11 +83,10 @@ module Bp3
         end
       end
 
-      # rubocop:disable Metrics/ParameterLists
+      # rubocop:disable-next Metrics/ParameterLists
       def log(level:, key:, message: nil, exception: nil, site: nil, details: {}, **system_log_options)
         SystemLogs.log(level:, key:, message:, exception:, site:, details:, **system_log_options)
       end
-      # rubocop:enable Metrics/ParameterLists
 
       def log_debug(key:, message:, details: {}, **system_log_options)
         SystemLogs.log_debug(key:, message:, details:, **system_log_options)
