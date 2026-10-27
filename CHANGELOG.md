@@ -1,14 +1,23 @@
 ## [Unreleased]
 
-- Breaking: Tenantable default scopes reach as far as the primary login, the request state's
+## [0.3.0] - 2026-10-26
+
+### Breaking
+- Scope Tenantable by the primary login
+  Tenantable default scopes reach as far as the primary login, the request state's
   `current_login` (the least privileged one signed in), rather than as far as any root or admin signed
   in. A root signed in beside a user or an admin no longer reaches every site, and an admin signed in
   beside a user no longer reaches every tenant; with one login signed in, nothing changes
-- Breaking: Tenantable reads the request state through `Bp3::Core::Rqid.global_request_state_class`
+- Read request state through `Bp3::Core::Rqid.global_request_state_class`
+  Tenantable reads the request state through `Bp3::Core::Rqid.global_request_state_class`
   rather than a `GlobalRequestState` constant, so `Bp3::Core::Rqid.global_request_state_class_name`
   must be configured wherever Tenantable is used
 - Add `Bp3::Core::Tenantable.reaches_every_site?`, `.reaches_every_tenant?` and `.global_request_state`
-- Fix `efon?` and `cfon?` returning the default when the flag is explicitly off; `cfon` returns the
+
+### Bug fixes
+
+- Fix efon? and cfon?
+  Fix `efon?` and `cfon?` returning the default when the flag is explicitly off; `cfon` returns the
   default when the config is not set
 
 ## [0.2.0] - 2026-01-09
