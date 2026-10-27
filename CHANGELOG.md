@@ -8,6 +8,8 @@
   rather than a `GlobalRequestState` constant, so `Bp3::Core::Rqid.global_request_state_class_name`
   must be configured wherever Tenantable is used
 - Add `Bp3::Core::Tenantable.reaches_every_site?`, `.reaches_every_tenant?` and `.global_request_state`
+- Fix `efon?` and `cfon?` returning the default when the flag is explicitly off; `cfon` returns the
+  default when the config is not set
 
 ## [0.2.0] - 2026-01-09
 
