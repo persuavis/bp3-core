@@ -1,9 +1,11 @@
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-30
+
 ### Security
 
-- Add `Bp3::Core::Ransackable::Explore`, a stricter answer to ransack's allowlist questions
-  Asked with `Bp3::Core::Ransackable::EXPLORE` as the `auth_object`, `Ransackable` no longer allows every
+- Tighten ransack allowlist. Add `Bp3::Core::Ransackable::Explore`, a stricter answer to ransack's allowlist
+  questions. Asked with `Bp3::Core::Ransackable::EXPLORE` as the `auth_object`, `Ransackable` no longer allows every
   column and association: it refuses encrypted attributes, columns matching `filter_parameters`, columns
   of a `json`, `jsonb`, `binary`, `tsvector`, `vector` or `halfvec` type, and what a model names in
   `unexplorable_columns`, and allows only the associations a model names in `explorable_associations`.
@@ -14,6 +16,7 @@
 ## [0.3.0] - 2026-10-26
 
 ### Breaking
+
 - Scope Tenantable by the primary login
   Tenantable default scopes reach as far as the primary login, the request state's
   `current_login` (the least privileged one signed in), rather than as far as any root or admin signed
