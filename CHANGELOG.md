@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+### Security
+
+- Add `Bp3::Core::Ransackable::Explore`, a stricter answer to ransack's allowlist questions
+  Asked with `Bp3::Core::Ransackable::EXPLORE` as the `auth_object`, `Ransackable` no longer allows every
+  column and association: it refuses encrypted attributes, columns matching `filter_parameters`, columns
+  of a `json`, `jsonb`, `binary`, `tsvector`, `vector` or `halfvec` type, and what a model names in
+  `unexplorable_columns`, and allows only the associations a model names in `explorable_associations`.
+  Any other `auth_object` gets the answer it always got
+- A model that must not allow plain ransack includes `Explore` alone; it answers nothing to any other
+  `auth_object`
+
 ## [0.3.0] - 2026-10-26
 
 ### Breaking
