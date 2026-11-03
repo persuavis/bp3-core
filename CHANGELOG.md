@@ -1,5 +1,10 @@
 ## [Unreleased]
 
+### Changed
+
+- `Bp3::Core::SystemLogs` writes to the Rails log at the level it was called with, instead of always at
+  `debug`. `log_exception`, and any other level that is not a logger level, is written as `error`
+
 ## [0.4.0] - 2026-10-30
 
 ### Security

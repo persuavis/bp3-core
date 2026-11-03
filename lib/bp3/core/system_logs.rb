@@ -8,6 +8,7 @@ module Bp3
       extend ActiveSupport::Concern
 
       SYSTEM_LOG_DEFAULTS = { log_to_db: true, log_to_io: true }.freeze
+      IO_LEVELS = %w[debug info warn error].freeze
 
       mattr_accessor :system_exception_name, :system_log_name
 
@@ -27,7 +28,7 @@ module Bp3
           record = nil
           if exception
             if system_log_options[:log_to_io]
-              rails_logger.debug do
+              rails_logger.public_send(io_level(level)) do
                 "SystemLogs, #{level}, #{key}, #{exception.message}"
               end
             end
@@ -35,7 +36,9 @@ module Bp3
           end
           return record if (message || '').strip == ''
 
-          rails_logger.debug { "SystemLogs, #{level}, #{key}, #{message}" } if system_log_options[:log_to_io]
+          if system_log_options[:log_to_io]
+            rails_logger.public_send(io_level(level)) { "SystemLogs, #{level}, #{key}, #{message}" }
+          end
           begin
             system_logger.log_message(level:, key:, message:, details:) if system_log_options[:log_to_db]
           rescue StandardError => e
@@ -66,6 +69,12 @@ module Bp3
             return nil
           end
           log(level: 'exception', key:, exception:, details:, **system_log_options)
+        end
+
+        # The logger method for a log level. Anything that is not a logger level, such as 'exception',
+        # is written as an error. The level can come from data, so it never names a method directly.
+        def io_level(level)
+          IO_LEVELS.include?(level.to_s) ? level.to_s : 'error'
         end
 
         def rails_logger
