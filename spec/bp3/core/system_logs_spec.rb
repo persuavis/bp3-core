@@ -31,6 +31,14 @@ RSpec.describe Bp3::Core::SystemLogs do
       expect(io.string).to include('ERROR SystemLogs, exception, a.key, it broke')
     end
 
+    it 'writes an exception at ERROR whatever the level, and a message alongside it at its own level' do
+      described_class.log(level: 'info', key: 'a.key', message: 'a message', exception: StandardError.new('it broke'),
+                          log_to_db: false)
+
+      expect(io.string).to include('ERROR SystemLogs, info, a.key, it broke')
+      expect(io.string).to include('INFO SystemLogs, info, a.key, a message')
+    end
+
     it 'writes a symbol level at that level' do
       described_class.log(level: :warn, key: 'a.key', message: 'a message', log_to_db: false)
 

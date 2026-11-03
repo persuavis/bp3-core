@@ -28,7 +28,7 @@ module Bp3
           record = nil
           if exception
             if system_log_options[:log_to_io]
-              rails_logger.public_send(io_level(level)) do
+              rails_logger.error do
                 "SystemLogs, #{level}, #{key}, #{exception.message}"
               end
             end
@@ -71,8 +71,8 @@ module Bp3
           log(level: 'exception', key:, exception:, details:, **system_log_options)
         end
 
-        # The logger method for a log level. Anything that is not a logger level, such as 'exception',
-        # is written as an error. The level can come from data, so it never names a method directly.
+        # The logger method for a log level. Anything that is not a logger level is written as an error.
+        # The level can come from data, so it never names a method directly.
         def io_level(level)
           IO_LEVELS.include?(level.to_s) ? level.to_s : 'error'
         end
