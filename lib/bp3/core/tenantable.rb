@@ -5,6 +5,9 @@ module Bp3
     module Tenantable
       extend ActiveSupport::Concern
 
+      # The belongs_to associations with a site check of their own
+      SITE_CHECKED_ASSOCIATIONS = %i[sites_site tenant workspaces_workspace].freeze
+
       # The application's request state, the Bp3::RequestState::Base subclass Bp3::Core::Rqid is
       # configured with
       def self.global_request_state
@@ -70,6 +73,51 @@ module Bp3
         errors.add(:workspaces_workspace, :must_match_site)
       end
 
+      # Every record the row belongs to that has a site must have the row's site. A root's default scope
+      # reaches every site, so an id from another site is found and would otherwise be stored. Checked
+      # when the foreign key, or a polymorphic type, is set or changed, so an unchanged row costs nothing.
+      def belongs_to_records_match_site
+        site_id = sites_site_id || sites_site&.id
+        return if site_id.nil?
+
+        self.class.reflect_on_all_associations(:belongs_to).each do |reflection|
+          next if SITE_CHECKED_ASSOCIATIONS.include?(reflection.name) || !belonged_record_changed?(reflection)
+
+          belonged_site_id = belonged_record_site_id(reflection)
+          next if belonged_site_id.nil? || belonged_site_id == site_id
+
+          errors.add(reflection.name, :must_match_site)
+        end
+      end
+
+      def belonged_record_changed?(reflection)
+        attribute_changed?(reflection.foreign_key.to_s) ||
+          (reflection.polymorphic? && attribute_changed?(reflection.foreign_type.to_s)) ||
+          association(reflection.name).target&.new_record?
+      end
+
+      # The site of the record the association points to, nil when that record has no site
+      def belonged_record_site_id(reflection)
+        loaded = association(reflection.name)
+        if loaded.loaded? && !loaded.stale_target? && loaded.target
+          return loaded.target.respond_to?(:sites_site_id) ? loaded.target.sites_site_id : nil
+        end
+
+        klass = belonged_record_class(reflection)
+        id = self[reflection.foreign_key]
+        return if klass.nil? || id.nil? || !klass.column_names.include?('sites_site_id')
+
+        klass.unscoped.where(klass.primary_key => id).pick(:sites_site_id)
+      end
+
+      def belonged_record_class(reflection)
+        klass = reflection.polymorphic? ? self[reflection.foreign_type]&.safe_constantize : reflection.klass
+        klass if klass.is_a?(Class) && klass < ActiveRecord::Base
+      rescue NameError
+        nil
+      end
+
+      # rubocop:disable-next Metrics/BlockLength
       class_methods do
         def configure_tenancy(tenancy_configuration = {})
           @tenancy_configuration = default_configuration.merge(tenancy_configuration)
@@ -92,6 +140,8 @@ module Bp3
           alias_method :site=, :sites_site=
 
           before_validation :set_sites_site_id
+
+          validate :belongs_to_records_match_site
 
           default_scope lambda {
             site = Bp3::Core::Tenantable.global_request_state.either_site
