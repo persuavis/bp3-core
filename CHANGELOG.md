@@ -2,6 +2,13 @@
 
 ### Changed
 
+## [0.6.0] - 2026-11-14
+
+### Breaking (in a good way)
+
+- Validate that belongs_to records match site
+- Update gems
+
 ## [0.5.0] - 2026-11-02
 
 - `Bp3::Core::SystemLogs` writes to the Rails log at the level it was called with, instead of always at
