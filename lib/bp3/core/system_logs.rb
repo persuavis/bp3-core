@@ -13,11 +13,11 @@ module Bp3
       mattr_accessor :system_exception_name, :system_log_name
 
       def self.system_exception_class
-        @@system_exception_class ||= system_exception_name.constantize # rubocop:disable Style/ClassVars
+        system_exception_name.constantize
       end
 
       def self.system_log_class
-        @@system_log_class ||= system_log_name.constantize # rubocop:disable Style/ClassVars
+        system_log_name.constantize
       end
 
       # Class methods for use in contexts without instance methods

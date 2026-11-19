@@ -8,7 +8,7 @@ module Bp3
       mattr_accessor :global_request_state_class_name, :global_request_state_method
 
       def self.global_request_state_class
-        @@global_request_state_class ||= global_request_state_class_name.constantize # rubocop:disable Style/ClassVars
+        global_request_state_class_name.constantize
       end
 
       included do
