@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.7.1] - 2026-11-21
+
+- Leave rqid associations out of belongs_to site check
+
 ## [0.7.0] - 2026-11-20
 
 - Require Ruby 4.0.10 and update Bundler to 4.1.0
