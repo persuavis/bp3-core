@@ -8,6 +8,10 @@ module Bp3
       # The belongs_to associations with a site check of their own
       SITE_CHECKED_ASSOCIATIONS = %i[sites_site tenant workspaces_workspace].freeze
 
+      # The belongs_to associations the check of the records a row belongs to passes over: those with
+      # a check of their own, and Rqid's, which point at the records of the request the row was written in
+      UNCHECKED_BELONGS_TO = (SITE_CHECKED_ASSOCIATIONS + Bp3::Core::Rqid::REQUEST_ASSOCIATIONS).freeze
+
       # The application's request state, the Bp3::RequestState::Base subclass Bp3::Core::Rqid is
       # configured with
       def self.global_request_state
@@ -81,7 +85,7 @@ module Bp3
         return if site_id.nil?
 
         self.class.reflect_on_all_associations(:belongs_to).each do |reflection|
-          next if SITE_CHECKED_ASSOCIATIONS.include?(reflection.name) || !belonged_record_changed?(reflection)
+          next if UNCHECKED_BELONGS_TO.include?(reflection.name) || !belonged_record_changed?(reflection)
 
           belonged_site_id = belonged_record_site_id(reflection)
           next if belonged_site_id.nil? || belonged_site_id == site_id
@@ -96,7 +100,8 @@ module Bp3
           association(reflection.name).target&.new_record?
       end
 
-      # The site of the record the association points to, nil when that record has no site
+      # The site of the record the association points to, nil when that record has no site. Looked up
+      # by the column the foreign key holds, which is the association's primary_key: when one is given.
       def belonged_record_site_id(reflection)
         loaded = association(reflection.name)
         if loaded.loaded? && !loaded.stale_target? && loaded.target
@@ -104,10 +109,10 @@ module Bp3
         end
 
         klass = belonged_record_class(reflection)
-        id = self[reflection.foreign_key]
-        return if klass.nil? || id.nil? || !klass.column_names.include?('sites_site_id')
+        key = self[reflection.foreign_key]
+        return if klass.nil? || key.nil? || !klass.column_names.include?('sites_site_id')
 
-        klass.unscoped.where(klass.primary_key => id).pick(:sites_site_id)
+        klass.unscoped.where(reflection.association_primary_key(klass) => key).pick(:sites_site_id)
       end
 
       def belonged_record_class(reflection)

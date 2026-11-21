@@ -7,6 +7,10 @@ module Bp3
 
       mattr_accessor :global_request_state_class_name, :global_request_state_method
 
+      # The records of the request a row was written in, found through the rqid they share. Sharing a
+      # request is not belonging to it, so Tenantable leaves them out of its site check.
+      REQUEST_ASSOCIATIONS = %i[original_request original_response original_visit].freeze
+
       def self.global_request_state_class
         global_request_state_class_name.constantize
       end
